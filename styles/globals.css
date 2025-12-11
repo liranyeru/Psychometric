@@ -1,1 +1,9 @@
-/* Placeholder file — full implementation will be expanded */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+  background:#f4f7f8;
+  font-family: sans-serif;
+}
