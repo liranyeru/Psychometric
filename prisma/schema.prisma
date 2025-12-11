@@ -1,7 +1,6 @@
-
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -9,8 +8,29 @@ generator client {
 }
 
 model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  createdAt DateTime  @default(now())
+  attempts  Attempt[]
+  weakWords WeakWord[]
+}
+
+model Attempt {
   id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
+  userId    Int
+  question  String
+  correct   Boolean
   createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model WeakWord {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  word      String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
 }
