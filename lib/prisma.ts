@@ -3,10 +3,10 @@ import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = global as any;
 
-export const prisma =
+export const prisma: PrismaClient =
   globalForPrisma.prisma ||
   new PrismaClient({
-    log: ["query"]
+    log: ["error", "warn"]
   });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
