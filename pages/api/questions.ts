@@ -1,8 +1,8 @@
-
 import type { NextApiRequest, NextApiResponse } from "next";
 
+type Topic = "quant" | "verbal" | "english";
+
 const questions = [
-  // Quantitative
   {
     id: 1,
     topic: "quant",
@@ -19,7 +19,6 @@ const questions = [
     correctIndex: 1,
     solution: "3x+6=15 => 3x=9 => x=3."
   },
-  // Verbal
   {
     id: 3,
     topic: "verbal",
@@ -31,33 +30,36 @@ const questions = [
   {
     id: 4,
     topic: "verbal",
-    text: "השלמת משפט: "הוא עבד קשה ______ שלא ירגיש חוסר ביטחון בבחינה."",
+    text: 'השלמת משפט: "הוא עבד קשה ______ שלא ירגיש חוסר ביטחון בבחינה."',
     options: ["כדי", "אף על פי", "מכיוון", "לכן"],
     correctIndex: 0,
     solution: "הכוונה למטרת העבודה הקשה: כדי שלא ירגיש חוסר ביטחון."
   },
-  // English
   {
     id: 5,
     topic: "english",
-    text: "Choose the correct word: "Her explanation was very ____; everyone understood the idea."",
+    text: 'Choose the correct word: "Her explanation was very ____; everyone understood the idea."',
     options: ["confusing", "clear", "rare", "weak"],
     correctIndex: 1,
-    solution: ""clear" fits the meaning that everyone understood."
+    solution: '"clear" fits the meaning that everyone understood.'
   },
   {
     id: 6,
     topic: "english",
-    text: "Vocabulary: "rapid" means:",
+    text: 'Vocabulary: "rapid" means:',
     options: ["very slow", "very fast", "very old", "very loud"],
     correctIndex: 1,
-    solution: ""rapid" = very fast."
+    solution: '"rapid" = very fast.'
   }
-];
+] as const;
 
-export default function handler(req: NextApiRequest, res: NextApiResponse){
-  const { topic } = req.query;
-  if(!topic) return res.status(400).json({ error:"topic is required" });
-  const filtered = questions.filter(q=>q.topic===topic);
-  res.status(200).json({ questions: filtered });
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const topic = Array.isArray(req.query.topic) ? req.query.topic[0] : req.query.topic;
+
+  if (!topic) {
+    return res.status(400).json({ error: "topic is required" });
+  }
+
+  const filtered = questions.filter((q) => q.topic === (topic as Topic));
+  return res.status(200).json({ questions: filtered });
 }
